@@ -74,7 +74,9 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 int enc_ctr = 0;
 uint8_t MSG[35] = {'\0'};
+uint8_t WOR[35] = {'\0'};
 uint8_t pData[BUFFER_SIZE];
+uint8_t worked = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,6 +98,7 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef * hspi)
 {
     HAL_SPI_Receive_DMA(&hspi1, pData, BUFFER_SIZE);
     HAL_UART_Transmit_IT(&huart3, pData, BUFFER_SIZE);
+    worked = 1;
 }
 /* USER CODE END 0 */
 
@@ -143,9 +146,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  sprintf(MSG, "Encoder Counter = %d\r\n", enc_ctr);
+	  sprintf(MSG, "Encoder Counter = %d\n\r", enc_ctr);
 	  HAL_UART_Transmit(&huart3, MSG, sizeof(MSG), BUFFER_SIZE);
 	  HAL_Delay(500);
+	  if(worked){
+//		  sprintf(WOR, "Worked at %f\n\r", HAL_GetTick()/1000.0);
+		  sprintf(WOR, "Worked");
+		  HAL_UART_Transmit(&huart3, WOR, sizeof(WOR), BUFFER_SIZE);
+		  worked = 0;
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -470,7 +479,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : ChB_Pin ChA_Pin */
   GPIO_InitStruct.Pin = ChB_Pin|ChA_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 

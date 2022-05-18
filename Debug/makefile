@@ -76,7 +76,7 @@ main-build: STM32_test.elf secondary-outputs
 
 # Tool invocations
 STM32_test.elf STM32_test.map: $(OBJS) $(USER_OBJS) /home/willcmc/STM32CubeIDE/workspace_1.9.0/STM32_test/STM32H743ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "STM32_test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/willcmc/STM32CubeIDE/workspace_1.9.0/STM32_test/STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32_test.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+	arm-none-eabi-g++ -o "STM32_test.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"/home/willcmc/STM32CubeIDE/workspace_1.9.0/STM32_test/STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32_test.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
